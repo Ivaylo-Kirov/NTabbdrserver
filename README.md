@@ -1,0 +1,1 @@
+PostgreSQL on AWS, Sequelize, JWT
