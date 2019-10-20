@@ -3,6 +3,7 @@ const db = require('./config/db')
 const DoctorModel = require('./models/Doctor')
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 db.authenticate()
     .then(() => console.log('PostgreSQL connected'))
@@ -57,9 +58,12 @@ function verifyToken(req, res, next) {
 }
 
 app.post('/user', (req, res) => {
-    DoctorModel.create({ name: req.body.name, email: req.body.email, password: req.body.password, communication: req.body.communication })
-        .then((doctor) => {
-            res.send(JSON.stringify(doctor.id));
+    bcrypt.hash(req.body.password, 4)
+        .then((hash) => {
+            DoctorModel.create({ name: req.body.name, email: req.body.email, password: hash, communication: req.body.communication })
+                .then((doctor) => {
+                    res.send(JSON.stringify(doctor.id));
+            });
     });
 })
 
@@ -67,24 +71,24 @@ app.post('/login', (req, res) => {
     DoctorModel.findOne({ where: {email: req.body.email} })
         .then(doctor => {
             if (doctor) {
-                if (doctor.password === req.body.password) {
-                    jwt.sign({doctor: {email: doctor.email, password: doctor.password}}, 'secret', (err, token) => {
-                        if (err) console.log(err);
-                        if (token) {
-                            res.send(JSON.stringify(token))
-                        }
-                    });
-                } else {
-                    res.sendStatus(403);
-                }
+                bcrypt.compare(req.body.password, doctor.password, (err, match) => {
+                    if (err) throw err;
+                    if(match) {
+                        jwt.sign({doctor: {email: doctor.email, password: doctor.password}}, 'secret', (err, token) => {
+                            if (err) console.log(err);
+                            if (token) res.send(JSON.stringify(token))
+                        });
+                    } else {
+                        res.sendStatus(403);
+                    }
+                });
             } else {
                 res.sendStatus(403);
             }
         })
-        .catch((error) => {
+        .catch((err) => {
             res.sendStatus(403);
         })
 })
-
 
 app.listen(PORT, console.log(`Server running on PORT: ${PORT}`));
