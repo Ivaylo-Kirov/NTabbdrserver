@@ -65,7 +65,7 @@ function verifyToken(req, res, next) {
 app.post('/user', (req, res) => {
     // bcrypt.hash(req.body.password, 4)
         // .then((hash) => {
-            DoctorModel.create({ name: req.body.name, email: req.body.email, password: hash, communication: req.body.communication })
+            DoctorModel.create({ name: req.body.name, email: req.body.email, password: req.body.password, communication: req.body.communication })
                 .then((doctor) => {
                     res.send(JSON.stringify(doctor.id));
             });
