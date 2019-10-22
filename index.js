@@ -6,8 +6,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 db.authenticate()
-    .then(() => console.log('PostgreSQL connected'))
+    .then(() => {
+        console.log('PostgreSQL connected')
+        
+    })
     .catch((err) => console.log(err))
+
+
 
 const app = express()
 

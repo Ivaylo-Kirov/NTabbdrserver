@@ -1,23 +1,24 @@
 const db = require('../config/db')
 const Sequelize = require('sequelize')
 
-const User = db.define('doctordetail', {
-    // attributes
-    name: {
-      type: Sequelize.STRING,
-    },
-    email: {
+const Doctor = db.define('doctor', {
+  name: {
+    type: Sequelize.STRING,
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false
+  },
+  password: {
       type: Sequelize.STRING,
       allowNull: false
-    },
-    password: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
-    communication: {
-        type: Sequelize.STRING
-    }
-  });
+  },
+  communication: {
+      type: Sequelize.STRING
+  }
+})
 
+// Doctor.sync()
+//   .then(() => console.log('table created'))
 
-module.exports = User;
+module.exports = Doctor;
