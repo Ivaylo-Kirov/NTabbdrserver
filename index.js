@@ -50,6 +50,9 @@ app.get('/user', verifyToken, (req, res) => {
     });
 })
 
+// to be clear, this is how we obtain the JWT that the client sent through
+// it's accessed by lookiing at the authorization header, then splitting to get rid of "bearer" and storing
+// the JWT value inside a predefined req.token variable
 function verifyToken(req, res, next) {
     const bearerHeader = req.headers['authorization'];
     if (bearerHeader) {
