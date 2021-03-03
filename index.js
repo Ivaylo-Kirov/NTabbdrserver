@@ -59,7 +59,7 @@ function verifyToken(req, res, next) {
         const bearer = bearerHeader.split(' ');
         const bearerToken = bearer[1];
         req.token = bearerToken;
-        next();
+        next(); // next flags the "success" here, otherwise, the app.get that includes verifyToken would fail with the below 403
     } else {
         res.sendStatus(403);
     }
